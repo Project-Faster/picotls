@@ -6676,8 +6676,8 @@ static struct {
     int *fds;
     size_t num_fds;
     size_t num_lost;
-    pthread_mutex_t mutex;
-} logctx = {.mutex = PTHREAD_MUTEX_INITIALIZER};
+    //pthread_mutex_t mutex;
+} logctx = {};
 
 size_t ptls_log_num_lost(void)
 {
@@ -6688,7 +6688,7 @@ int ptls_log_add_fd(int fd)
 {
     int ret;
 
-    pthread_mutex_lock(&logctx.mutex);
+    //pthread_mutex_lock(&logctx.mutex);
 
     int *newfds;
     if ((newfds = realloc(logctx.fds, sizeof(logctx.fds[0]) * (logctx.num_fds + 1))) == NULL) {
@@ -6702,7 +6702,7 @@ int ptls_log_add_fd(int fd)
     ret = 0; /* success */
 
 Exit:
-    pthread_mutex_unlock(&logctx.mutex);
+    //pthread_mutex_unlock(&logctx.mutex);
     return ret;
 }
 
@@ -6711,7 +6711,7 @@ Exit:
 void ptls_log__do_write(const ptls_buffer_t *buf)
 {
 #if PTLS_HAVE_LOG
-    pthread_mutex_lock(&logctx.mutex);
+    //pthread_mutex_lock(&logctx.mutex);
 
     for (size_t fd_index = 0; fd_index < logctx.num_fds;) {
         ssize_t ret;
@@ -6734,6 +6734,6 @@ void ptls_log__do_write(const ptls_buffer_t *buf)
         }
     }
 
-    pthread_mutex_unlock(&logctx.mutex);
+    //pthread_mutex_unlock(&logctx.mutex);
 #endif
 }
